@@ -67,8 +67,8 @@ const Register = () => {
         })
         .catch((error) => {
           setHidden(false);
-          console.log(error);
-          enqueueSnackbar(error.message, {
+          console.log(error.response.data);
+          enqueueSnackbar(error.response.data.message, {
             variant: "error",
             persist: false,
           });
