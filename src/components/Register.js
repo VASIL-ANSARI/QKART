@@ -10,9 +10,15 @@ import "./Register.css";
 
 const Register = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const [state, setState] = useState(() => {
+    const state = { username: "", password: "", confirmPassword: "" };
+    return state;
+  });
+  const [hidden, setHidden] = useState(() => {
+    const hidden = false;
+    return hidden;
+  });
 
-
-  // TODO: CRIO_TASK_MODULE_REGISTER - Implement the register function
   /**
    * Definition for register handler
    * - Function to be called when the user clicks on the register button or submits the register form
@@ -35,10 +41,41 @@ const Register = () => {
    *      "message": "Username is already taken"
    * }
    */
+
   const register = async (formData) => {
+    if (validateInput(formData) === true) {
+      const requestBody = {
+        username: formData.username,
+        password: formData.password,
+      };
+      axios
+        .post(config.endpoint + "/auth/register", requestBody)
+        .then((response) => {
+          console.log(response);
+          setHidden(false);
+          if (response.data.success === true) {
+            enqueueSnackbar("Registered Successfully", {
+              variant: "success",
+              persist: false,
+            });
+          } else if (response.data.success === false) {
+            enqueueSnackbar(response.data.message, {
+              variant: "error",
+              persist: false,
+            });
+          }
+        })
+        .catch((error) => {
+          setHidden(false);
+          console.log(error);
+          enqueueSnackbar(error.message, {
+            variant: "error",
+            persist: false,
+          });
+        });
+      }
   };
 
-  // TODO: CRIO_TASK_MODULE_REGISTER - Implement user input validation logic
   /**
    * Validate the input values so that any bad or illegal values are not passed to the backend.
    *
@@ -57,6 +94,47 @@ const Register = () => {
    * -    Check that confirmPassword field has the same value as password field - Passwords do not match
    */
   const validateInput = (data) => {
+    if (data.username.length === 0) {
+      setHidden(false);
+      enqueueSnackbar("Username is a required field", {
+        variant: "warning",
+        persist: false,
+      });
+      return false;
+    }
+    if (data.username.length < 6) {
+      setHidden(false);
+      enqueueSnackbar("Username must be at least 6 characters", {
+        variant: "warning",
+        persist: false,
+      });
+      return false;
+    }
+    if (data.password.length === 0) {
+      setHidden(false);
+      enqueueSnackbar("Password is a required field", {
+        variant: "warning",
+        persist: false,
+      });
+      return false;
+    }
+    if (data.password.length < 6) {
+      setHidden(false);
+      enqueueSnackbar("Password must be at least 6 characters", {
+        variant: "warning",
+        persist: false,
+      });
+      return false;
+    }
+    if (data.password !== data.confirmPassword) {
+      setHidden(false);
+      enqueueSnackbar("Passwords do not match", {
+        variant: "warning",
+        persist: false,
+      });
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -77,6 +155,14 @@ const Register = () => {
             title="Username"
             name="username"
             placeholder="Enter Username"
+            onChange={(event) => {
+              const newState = {
+                username: event.target.value,
+                password: state.password,
+                confirmPassword: state.confirmPassword,
+              };
+              setState(newState);
+            }}
             fullWidth
           />
           <TextField
@@ -85,6 +171,14 @@ const Register = () => {
             label="Password"
             name="password"
             type="password"
+            onChange={(event) => {
+              const newState = {
+                password: event.target.value,
+                username: state.username,
+                confirmPassword: state.confirmPassword,
+              };
+              setState(newState);
+            }}
             helperText="Password must be atleast 6 characters length"
             fullWidth
             placeholder="Enter a password with minimum 6 characters"
@@ -94,17 +188,43 @@ const Register = () => {
             variant="outlined"
             label="Confirm Password"
             name="confirmPassword"
+            onChange={(event) => {
+              const newState = {
+                confirmPassword: event.target.value,
+                username: state.username,
+                password: state.password,
+              };
+              setState(newState);
+            }}
             type="password"
             fullWidth
           />
-           <Button className="button" variant="contained">
-            Register Now
-           </Button>
+          {hidden && (
+            <div className="progress">
+              <CircularProgress></CircularProgress>
+            </div>
+          )}
+
+          {!hidden && (
+            <Button
+              className="button"
+              variant="contained"
+              onClick={(event) => {
+                event.preventDefault();
+                setHidden(true);
+                const data = state;
+                console.log(data, hidden);
+                register(data);
+              }}
+            >
+              Register Now
+            </Button>
+          )}
           <p className="secondary-action">
             Already have an account?{" "}
-             <a className="link" href="#">
+            <a className="link" href="#">
               Login here
-             </a>
+            </a>
           </p>
         </Stack>
       </Box>
