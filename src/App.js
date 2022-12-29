@@ -1,5 +1,8 @@
 import Register from "./components/Register";
 import ipConfig from "./ipConfig.json";
+import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
+import Login from "./components/Login";
+import Products from "./components/Products";
 
 export const config = {
   endpoint: `http://${ipConfig.workspaceIp}:8082/api/v1`,
@@ -7,9 +10,15 @@ export const config = {
 
 function App() {
   return (
-    <div className="App">
-          <Register />
-    </div>
+    <Router>
+      <div className="App">
+        <Switch>
+        <Route exact path="/" component={Products} />
+        <Route exact path="/register" component={Register} />
+        <Route exact path="/login" component={Login} />
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
