@@ -17,7 +17,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
   return (
     <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
       {product.map((item) => (
-        <Grid item xs={6} md={4}>
+        <Grid item xs={6} md={3} key={item._id}>
           <Card className="card">
             <CardActionArea>
               <CardMedia

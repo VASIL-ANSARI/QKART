@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
-import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { config } from "../App";
 import Footer from "./Footer";
@@ -17,8 +16,6 @@ import ProductCard from "./ProductCard";
 import "./Products.css";
 
 const Products = () => {
-  const { enqueueSnackbar } = useSnackbar();
-  const [searchTerm, setSearchTerm] = useState("");
   const [hidden, setHidden] = useState(() => {
     const hidden = true;
     return hidden;
