@@ -8,7 +8,6 @@ import "./Header.css";
 const Header = ({ children, hasHiddenAuthButtons }) => {
   const data = localStorage.getItem('username');
   const history = useHistory();
-  console.log(history);
   return (
     <Box className="header">
       <Box className="header-title">
@@ -24,8 +23,9 @@ const Header = ({ children, hasHiddenAuthButtons }) => {
           Back to explore
         </Button>
       )}
-      {!hasHiddenAuthButtons && (data === null) &&(
+      {!hasHiddenAuthButtons && (data === null) && (
         <Stack spacing={2} direction="row">
+          {children}
           <Button className="explore-button" variant="text" onClick={() => history.push("/login",{from : "Product"})}>
             LOGIN
           </Button>
