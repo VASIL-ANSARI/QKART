@@ -317,9 +317,12 @@ const Products = () => {
   useEffect(() => {
     const onLoadHandler = async () => {
       performAPICall();
-      if (data) {
+      if (token) {
         setStorage(true);
         fetchCart(token);
+      }
+      else{
+        setStorage(false);
       }
     };
     onLoadHandler();
