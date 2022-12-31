@@ -30,16 +30,9 @@ const Products = () => {
     return empty;
   });
   const [data, setData] = useState([]);
+  const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    performAPICall();
-    const data = localStorage.getItem("username");
-    const token = localStorage.getItem("token");
-    if (data !== null) {
-      setStorage(true);
-      fetchCart(token);
-    }
-  }, []);
+  
   /**
    * Make API call to get the products list and store it to display the products
    *
@@ -294,7 +287,7 @@ const Products = () => {
             },
           }
         )
-        .then(response => {
+        .then((response) => {
           console.log(response.data);
           setCartItem(response.data);
           return response;
@@ -320,6 +313,18 @@ const Products = () => {
         });
     }
   };
+
+  useEffect(() => {
+    const onLoadHandler = async () => {
+      performAPICall();
+      if (data) {
+        setStorage(true);
+        fetchCart(token);
+      }
+    };
+    onLoadHandler();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div>

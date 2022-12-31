@@ -88,6 +88,24 @@ export const getTotalCartValue = (items = []) => {
 };
 
 /**
+ * Return the sum of quantities of all products added to the cart
+ *
+ * @param { Array.<CartItem> } items
+ *    Array of objects with complete data on products in cart
+ *
+ * @returns { Number }
+ *    Total quantity of products added to the cart
+ *
+ */
+export const getTotalItems = (items = []) => {
+  let result = 0;
+  items.forEach((i) => {
+    result = result + i.qty;
+  })
+  return result;
+};
+
+/**
  * Component to display the current quantity for a product and + and - buttons to update product quantity on cart
  *
  * @param {Number} value
@@ -99,9 +117,20 @@ export const getTotalCartValue = (items = []) => {
  * @param {Function} handleDelete
  *    Handler function which reduces the quantity of a product in cart by 1
  *
+ * @param {Boolean} isReadOnly
+ *    If product quantity on cart is to be displayed as read only without the + - options to change quantity
  *
  */
-const ItemQuantity = ({ value, handleAdd, handleDelete }) => {
+const ItemQuantity = ({ value, handleAdd, handleDelete, isReadOnly }) => {
+  if (isReadOnly === true) {
+    return (
+      <Stack direction="row" alignItems="center">
+        <Box padding="0.5rem" data-testid="item-qty">
+          Qty: {value}
+        </Box>
+      </Stack>
+    );
+  }
   return (
     <Stack direction="row" alignItems="center">
       <IconButton size="small" color="primary" onClick={handleDelete}>
@@ -131,7 +160,7 @@ const ItemQuantity = ({ value, handleAdd, handleDelete }) => {
  *
  *
  */
-const Cart = ({ products, items = [], handleQuantity }) => {
+const Cart = ({ products, items = [], handleQuantity, isReadOnly }) => {
   const history = useHistory();
   if (!items.length) {
     return (
@@ -198,6 +227,7 @@ const Cart = ({ products, items = [], handleQuantity }) => {
                       false
                     )
                   }
+                  isReadOnly = {isReadOnly}
                 />
                 <Box padding="0.5rem" fontWeight="700">
                   ${item.cost}
@@ -225,23 +255,24 @@ const Cart = ({ products, items = [], handleQuantity }) => {
             ${getTotalCartValue(Combineditems)}
           </Box>
         </Box>
-
-        <Box display="flex" justifyContent="flex-end" className="cart-footer">
-          <Button
-            color="primary"
-            variant="contained"
-            startIcon={<ShoppingCart />}
-            className="checkout-btn"
-            onClick={() => {
-              history.push({
-                pathname: "/checkout",
-                state: { products: { products }, items: { items } },
-              });
-            }}
-          >
-            Checkout
-          </Button>
-        </Box>
+        {!isReadOnly && (
+          <Box display="flex" justifyContent="flex-end" className="cart-footer">
+            <Button
+              color="primary"
+              variant="contained"
+              startIcon={<ShoppingCart />}
+              className="checkout-btn"
+              onClick={() => {
+                history.push({
+                  pathname: "/checkout",
+                  state: { products: { products }, items: { items } },
+                });
+              }}
+            >
+              Checkout
+            </Button>
+          </Box>
+        )}
       </Box>
     </>
   );

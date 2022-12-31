@@ -6,6 +6,9 @@
 
 .address-item {
     display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     padding: 1rem;
