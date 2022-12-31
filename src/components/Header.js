@@ -36,6 +36,7 @@ const Header = ({ children, hasHiddenAuthButtons }) => {
       )}
       {!hasHiddenAuthButtons && (data !== null) &&(
         <Stack spacing={2} direction="row">
+          {children}
           <Avatar alt={data} src="avatar.png" />
           <p className="secondary-action">{data}</p>
           <Button className="explore-button" variant="text"
